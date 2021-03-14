@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.responses import JSONResponse
 from joblib import load
 import pandas as pd
-from fastapi.encoders import jsonable_encoder
+#from fastapi.encoders import jsonable_encoder
 #from pydantic import BaseModel
 from torch.utils.data import DataLoader
 
@@ -40,7 +40,7 @@ async def predict_beer_style(brewery_name: int, review_aroma: int, review_appear
     answer = predict(obs_tensor, model, single=True)
     
     
-    return answer
+    return JSONResponse(answer.tolist())
 
 @app.post("/beers/type/")
 async def predict_beer_style_multi(brewery_name: int, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
@@ -60,12 +60,12 @@ async def predict_beer_style_multi(brewery_name: int, review_aroma: int, review_
     answer = predict(obs_tensor, model)
     
     
-    return answer
+    return JSONResponse(answer.tolist())
 
 
 @app.get("/model/architecture/")
 async def print_model():
     
     model = get_model()
-    return model
+    return JSONResponse(model.tolist())
 

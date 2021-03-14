@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 import joblib
-from sklearn.utils import StandardScaler
+from sklearn.preprocessing import StandardScaler
 import torch
 from torch.utils.data import Dataset
 

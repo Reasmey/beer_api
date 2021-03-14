@@ -1,8 +1,8 @@
-# model script to load to main.py
+# model script to load to main.py  g
 
 import numpy as np
 import pandas as pd
-import joblib
+from joblib import load
 from sklearn.preprocessing import StandardScaler
 import torch
 from torch.utils.data import Dataset
@@ -19,6 +19,16 @@ def format_features(brewery_name: int, review_aroma: int, review_appearance: int
         'review_taste': [review_taste]
     }
 
+# formater for multi input
+def format_features_multi(brewery_name: int, review_aroma: int, review_appearance: int, review_palate: int,
+                    review_taste: int):
+    return {
+        'brewery_name': list(brewery_name),
+        'review_aroma': list(review_aroma),
+        'review_appearance': list(review_appearance),
+        'review_palate': list(review_palate),
+        'review_taste': list(review_taste)
+    }
 
 # load scaler
 def apply_scaler(obs):
@@ -163,7 +173,8 @@ class ClassificationEmbdNN(torch.nn.Module):
 def get_model():
     
     # load model obj
-    model = torch.load('../models/model.pt')
+    model = ClassificationEmbdNN(emb_dims=[[5742,252]],no_of_cont=4)
+    #model = torch.load('../models/model.pt')
     #set to trained dict of weights
     model.load_state_dict(torch.load('../models/embed_3layers.pt'))
 

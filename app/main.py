@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 import torch
 from typing import List, Optional
 
-from model import format_features, format_features_multi, apply_scaler, single_tensor, get_model, predict
+from model import format_features, format_features_multi, apply_scaler, single_tensor, get_model, predict, EmbeddingDataset
 
 app = FastAPI()
 
@@ -131,7 +131,7 @@ async def predict_beer_style(brewery_name: int, review_aroma: float, review_appe
     answer = predict(obs_tensor, model, single=True)
 
     # answer_dict = {k: [v] for (k, v) in jsonable_encoder(answer).items()}
-    return answer
+    return JSONResponse(answer.tolist())
 
 @app.post("/beers/type/")
 async def predict_beer_style_multi(
@@ -153,22 +153,23 @@ async def predict_beer_style_multi(
     obs = apply_scaler(obs)
     
     #transform to embed object
-    obs_tensor = single_tensor(obs)
+    obs_tensor = EmbeddingDataset(obs)
     
     #predict on embed obj
     model = get_model()
     
     #return predictions as text string
-    answer = predict(obs_tensor, model)
+    answer = predict(obs_tensor, model, single=False)
 
     #answer_dict = {k: [v] for (k, v) in jsonable_encoder(answer.tolist()).items()}
-    return answer
+    return JSONResponse(answer.tolist())
 
 
 @app.get("/model/architecture/")
 async def print_model():
     
     model = get_model()
-    return JSONResponse(model.tolist())
+
+    return {'model archtecture': str(model)}
 
 

@@ -20,14 +20,14 @@ def format_features(brewery_name: int, review_aroma: int, review_appearance: int
     }
 
 # formater for multi input
-def format_features_multi(brewery_name: int, review_aroma: int, review_appearance: int, review_palate: int,
-                    review_taste: int):
+def format_features_multi(brewery_name: list, review_aroma: list, review_appearance: list, review_palate: list,
+                    review_taste: list):
     return {
-        'brewery_name': list(brewery_name),
-        'review_aroma': list(review_aroma),
-        'review_appearance': list(review_appearance),
-        'review_palate': list(review_palate),
-        'review_taste': list(review_taste)
+        'brewery_name': brewery_name,
+        'review_aroma': review_aroma,
+        'review_appearance': review_appearance,
+        'review_palate': review_palate,
+        'review_taste': review_taste
     }
 
 # load scaler
@@ -220,8 +220,7 @@ def predict(obs, model, single=False):
     from joblib import load
     label_encoders = load('../models/label_encoders.joblib')
     label = label_encoders['beer_style'].inverse_transform(predictions.argmax(1))
-    
-          
+
     return label
     
 

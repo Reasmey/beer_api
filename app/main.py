@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 import torch
 from typing import List, Optional
 
-from model import format_features, format_features_multi, apply_scaler, single_tensor, get_model, predict, EmbeddingDataset
+from model import format_features, format_features_multi, apply_scaler, single_tensor, get_model, predict, EmbeddingDataset, apply_name_encoder
 
 app = FastAPI()
 

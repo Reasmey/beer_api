@@ -5,7 +5,7 @@ import pandas as pd
 from joblib import load
 from sklearn.preprocessing import StandardScaler
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 
 # formater for single input
@@ -38,6 +38,16 @@ def apply_scaler(obs):
     scaler = load('../models/scaler.joblib')
     obs[num_cols] = scaler.fit_transform(obs[num_cols])
     
+    return obs
+
+# load label encoder
+def apply_name_encoder(obs):
+    '''Applies label encoder to cat_cols'''
+
+    cat_cols = ['brewery_name']
+    name_encoder = load('../models/name_encoder.joblib')
+    obs[cat_cols] = name_encoder.fit_transform(obs[cat_cols])
+
     return obs
 
 # create tensors for single input
@@ -198,10 +208,13 @@ def predict(obs, model, single=False):
         if single:
             output = model(obs['data'][0].unsqueeze(dim=0).to(device, 
                                      dtype=torch.long), 
-                       obs['data'][1].to(device, 
+                           obs['data'][1].to(device,
                                      dtype=torch.float)).cpu().numpy()
         else:
-            for i, batch in enumerate(obs):   
+
+            obs_loader = DataLoader(obs, batch_size=len(obs))
+
+            for i, batch in enumerate(obs_loader):
             
                 output = model(batch['data'][0].to(device, 
                                                dtype=torch.long), 
